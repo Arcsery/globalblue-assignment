@@ -23,6 +23,7 @@ import { PurchaseSummaryResponse } from '../../model/purchase-summary-response';
 import { PurchaseResponse } from '../../model/purchase-response';
 import { PurchaseEventsService } from '../../service/purchase-event';
 import { extractApiErrorMessage } from '../../shared/util/util';
+import { ToastService } from '../../service/toast';
 
 @Component({
   selector: 'app-purchases',
@@ -57,6 +58,7 @@ export class Purchases implements AfterViewInit {
   readonly formBuilder = inject(FormBuilder);
   readonly purchaseService = inject(PurchaseService);
   readonly purchaseEventsService = inject(PurchaseEventsService);
+  readonly toastService = inject(ToastService);
 
   @ViewChild(MatPaginator) paginator!: MatPaginator;
 
@@ -123,11 +125,13 @@ export class Purchases implements AfterViewInit {
     this.purchaseService.getPurchasesByUserEmail(userEmail).subscribe({
       next: (response) => {
         this.summary.set(response);
+        this.toastService.success('Purchases loaded successfully.');
         this.isLoading.set(false);
       },
       error: (error) => {
         this.summary.set(null);
         this.tableDataSource.data = [];
+        this.toastService.error(extractApiErrorMessage(error));
         this.errorMessage.set(extractApiErrorMessage(error));
         this.isLoading.set(false);
       },

@@ -20,6 +20,7 @@ import { PurchaseCreateRequest } from '../../model/purchase-create-request';
 import { extractApiErrorMessage, formatDateToLocalIsoDate } from '../../shared/util/util';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { startWith } from 'rxjs';
+import { ToastService } from '../../service/toast';
 
 @Component({
   selector: 'app-purchase-registration',
@@ -50,6 +51,7 @@ export class PurchaseRegistration {
   readonly formBuilder = inject(FormBuilder);
   readonly purchaseService = inject(PurchaseService);
   purchaseEventsService = inject(PurchaseEventsService);
+  readonly toastService = inject(ToastService);
 
   readonly maxPurchaseDate = new Date();
 
@@ -71,7 +73,7 @@ export class PurchaseRegistration {
 
   readonly formStatus = toSignal(
     this.purchaseForm.statusChanges.pipe(startWith(this.purchaseForm.status)),
-    { initialValue: this.purchaseForm.status }
+    { initialValue: this.purchaseForm.status },
   );
 
   readonly isFormInvalid = computed(() => {
@@ -107,10 +109,12 @@ export class PurchaseRegistration {
       next: () => {
         this.purchaseEventsService.notifyPurchaseCreated(request.userEmail);
         this.isSubmitting.set(false);
+        this.toastService.success("Purchase created successfully.");
         this.dialogRef.close(true);
       },
       error: (error) => {
         this.isSubmitting.set(false);
+        this.toastService.error(extractApiErrorMessage(error));
         this.errorMessage.set(extractApiErrorMessage(error));
       },
     });

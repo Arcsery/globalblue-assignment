@@ -32,7 +32,10 @@
   @if (summary()) {
     <mat-card class="summary-card">
       <mat-card-header>
-        <mat-card-title>VAT Summary</mat-card-title>
+        <mat-card-title>
+          <span style="display: block; margin-bottom: 10px">VAT Summary</span>
+          <span style="font-size: 20px">{{summary()?.userEmail}}</span>
+        </mat-card-title>
       </mat-card-header>
 
       <mat-card-content>
