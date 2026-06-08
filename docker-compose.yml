@@ -10,7 +10,32 @@ services:
     ports:
       - "5433:5432"
     volumes:
-      - vat_refund_postgres_data:/var/lib/postgresql
+      - vat_refund_postgres_data:/var/lib/postgresql/data
+
+  backend:
+    build:
+      context: ./backend
+    container_name: vat-refund-backend
+    restart: always
+    depends_on:
+      - db
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/vat_refund_db
+      SPRING_DATASOURCE_USERNAME: admin
+      SPRING_DATASOURCE_PASSWORD: admin
+      SPRING_JPA_HIBERNATE_DDL_AUTO: update
+    ports:
+      - "8080:8080"
+
+  frontend:
+    build:
+      context: ./frontend
+    container_name: vat-refund-frontend
+    restart: always
+    depends_on:
+      - backend
+    ports:
+      - "4200:4200"
 
 volumes:
   vat_refund_postgres_data:

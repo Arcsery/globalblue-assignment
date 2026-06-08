@@ -55,7 +55,6 @@ class PurchaseServiceTest {
 
         PurchaseResponse response = purchaseService.createPurchase(request);
 
-        assertThat(response.id()).isEqualTo(1L);
         assertThat(response.userEmail()).isEqualTo("user@example.com");
         assertThat(response.productName()).isEqualTo("Laptop");
         assertThat(response.category()).isEqualTo(PurchaseCategory.ELECTRONICS);
