@@ -1,59 +1,141 @@
-# Frontend
+# Frontend README
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 21.2.14.
+Angular frontend for the VAT Refund Calculation System.
 
-## Development server
+## Tech Stack
 
-To start a local development server, run:
+* Angular 21
+* Angular Material
+* Angular HTTP Client
+* Reactive Forms
+* Angular Signals
+* SCSS
 
-```bash
-ng serve
-```
+## Running the Frontend
 
-Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
-
-## Code scaffolding
-
-Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
-
-```bash
-ng generate component component-name
-```
-
-For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
+Install dependencies:
 
 ```bash
-ng generate --help
+npm install
 ```
 
-## Building
-
-To build the project run:
+Start the application:
 
 ```bash
-ng build
+npm start
 ```
 
-This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
+Frontend URL:
 
-## Running unit tests
+```text
+http://localhost:4200
+```
 
-To execute unit tests with the [Vitest](https://vitest.dev/) test runner, use the following command:
+The backend must be running on:
+
+```text
+http://localhost:8080
+```
+
+## Features
+
+### Purchase Form
+
+The purchase form is opened from the header using the `Add new purchase` button.
+
+The form contains:
+
+* user email
+* product name
+* category
+* net amount
+* VAT rate
+* purchase date
+
+Validation includes:
+
+* required fields
+* valid email format
+* positive net amount
+* future purchase dates are disabled
+
+On successful submit, the frontend calls:
+
+```text
+POST /api/purchases
+```
+
+### Purchases and VAT Summary View
+
+The purchases page contains:
+
+* user email search input
+* VAT summary card
+* Angular Material table
+* frontend-side paginator
+
+The summary displays:
+
+* total net amount
+* total VAT
+* total refundable VAT
+
+The table displays per-purchase breakdown:
+
+* product name
+* category
+* net amount
+* VAT rate
+* VAT amount
+* refund
+* purchase date
+
+Data is loaded from:
+
+```text
+GET /api/purchases/{userEmail}
+```
+
+### Toast Notifications
+
+The frontend contains a shared toast notification service.
+
+It is used for:
+
+* successful purchase creation
+* successful purchase loading
+* API errors
+* validation or backend error messages
+
+Multiple toast messages can be displayed at the same time.
+
+Responsibilities:
+
+```text
+header  -> toolbar and add purchase action
+model   -> interfaces, enums and constants
+pages   -> page-level components
+service -> backend API services and shared services
+shared  -> utilities and reusable components
+```
+
+## Build
 
 ```bash
-ng test
+npm run build
 ```
 
-## Running end-to-end tests
+## Notes
 
-For end-to-end (e2e) testing, run:
+The frontend uses Angular Material components for:
 
-```bash
-ng e2e
-```
+* toolbar
+* dialog
+* form fields
+* select inputs
+* datepicker
+* summary card
+* table
+* paginator
 
-Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
-
-## Additional Resources
-
-For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+The table paginator is frontend-side because the backend returns all purchases for a user as required by the assignment.
