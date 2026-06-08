@@ -10,8 +10,8 @@ export class ToastService {
   success(message: string): void {
     this.snackBar.open(message, 'Close', {
       duration: 3000,
-      horizontalPosition: 'right',
-      verticalPosition: 'top',
+      horizontalPosition: 'center',
+      verticalPosition: 'bottom',
       panelClass: ['success-toast'],
     });
   }
@@ -19,8 +19,8 @@ export class ToastService {
   error(message: string): void {
     this.snackBar.open(message, 'Close', {
       duration: 5000,
-      horizontalPosition: 'right',
-      verticalPosition: 'top',
+      horizontalPosition: 'center',
+      verticalPosition: 'bottom',
       panelClass: ['error-toast'],
     });
   }
@@ -28,8 +28,8 @@ export class ToastService {
   info(message: string): void {
     this.snackBar.open(message, 'Close', {
       duration: 3000,
-      horizontalPosition: 'right',
-      verticalPosition: 'top',
+      horizontalPosition: 'center',
+      verticalPosition: 'bottom',
     });
   }
 }

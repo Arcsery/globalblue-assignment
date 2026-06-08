@@ -1,5 +1,4 @@
 export interface PurchaseResponse {
-  id: number;
   userEmail: string;
   productName: string;
   category: string;

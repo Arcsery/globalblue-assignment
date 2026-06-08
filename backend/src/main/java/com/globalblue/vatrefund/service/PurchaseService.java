@@ -75,7 +75,6 @@ public class PurchaseService {
         BigDecimal refund = calculateRefund(purchase, vatAmount);
 
         return new PurchaseResponse(
-                purchase.getId(),
                 purchase.getUserEmail(),
                 purchase.getProductName(),
                 purchase.getCategory(),

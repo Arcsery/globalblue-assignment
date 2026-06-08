@@ -1,10 +1,17 @@
 <mat-toolbar>
-  <button matIconButton  aria-label="icon-button with menu icon">
+  <button mat-icon-button aria-label="Home">
     <mat-icon>home</mat-icon>
   </button>
   <span>VAT calculator</span>
   <span class="spacer"></span>
-  <button matIconButton aria-label=" icon-button with add icon" (click)="openDialog()">
+  <button
+    mat-button
+    type="button"
+    class="add-purchase-button"
+    (click)="openDialog()"
+    aria-label="Add new purchase"
+  >
     <mat-icon>add</mat-icon>
+    <span>Add new purchase</span>
   </button>
 </mat-toolbar>
