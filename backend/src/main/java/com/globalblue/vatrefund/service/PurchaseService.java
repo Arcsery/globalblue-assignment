@@ -6,6 +6,7 @@ import com.globalblue.vatrefund.domain.VatRate;
 import com.globalblue.vatrefund.dto.PurchaseCreateRequest;
 import com.globalblue.vatrefund.dto.PurchaseResponse;
 import com.globalblue.vatrefund.dto.PurchaseSummaryResponse;
+import com.globalblue.vatrefund.exception.PurchasesNotFoundException;
 import com.globalblue.vatrefund.repository.PurchaseRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -45,6 +46,10 @@ public class PurchaseService {
                 .stream()
                 .map(this::mapToPurchaseResponse)
                 .toList();
+
+        if (purchases.isEmpty()) {
+            throw new PurchasesNotFoundException(normalizedEmail);
+        }
 
         BigDecimal totalNetAmount = BigDecimal.ZERO;
         BigDecimal totalVat = BigDecimal.ZERO;

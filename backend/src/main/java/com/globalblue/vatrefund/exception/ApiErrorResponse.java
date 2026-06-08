@@ -1,4 +1,4 @@
-package com.globalblue.vatrefund.exeption;
+package com.globalblue.vatrefund.exception;
 
 import java.time.LocalDateTime;
 import java.util.List;
