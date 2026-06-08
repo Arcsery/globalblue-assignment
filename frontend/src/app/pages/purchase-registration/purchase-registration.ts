@@ -14,6 +14,12 @@ import { PurchaseCategory } from '../../model/purchase-category';
 import { VAT_RATES } from '../../model/vat-rate';
 import { MatDatepicker, MatDatepickerInput, MatDatepickerToggle } from '@angular/material/datepicker';
 import { MAT_DATE_LOCALE, provideNativeDateAdapter } from '@angular/material/core';
+import { PurchaseService } from '../../service/purchase';
+import { PurchaseEventsService } from '../../service/purchase-event';
+import { PurchaseCreateRequest } from '../../model/purchase-create-request';
+import { extractApiErrorMessage, formatDateToLocalIsoDate } from '../../shared/util/util';
+import { toSignal } from '@angular/core/rxjs-interop';
+import { startWith } from 'rxjs';
 
 @Component({
   selector: 'app-purchase-registration',
@@ -42,6 +48,8 @@ import { MAT_DATE_LOCALE, provideNativeDateAdapter } from '@angular/material/cor
 export class PurchaseRegistration {
   readonly dialogRef = inject(MatDialogRef<PurchaseRegistration>);
   readonly formBuilder = inject(FormBuilder);
+  readonly purchaseService = inject(PurchaseService);
+  purchaseEventsService = inject(PurchaseEventsService);
 
   readonly maxPurchaseDate = new Date();
 
@@ -52,15 +60,22 @@ export class PurchaseRegistration {
     userEmail: ['', [Validators.required, Validators.email]],
     productName: ['', [Validators.required]],
     category: [PurchaseCategory.Electronics, [Validators.required]],
-    netAmount: [0, [Validators.required, Validators.min(0.01)]],
+    netAmount: [[Validators.required, Validators.min(0.01)]],
     vatRate: [0.27, [Validators.required]],
     purchaseDate: [new Date(), [Validators.required]],
   });
 
   readonly formSubmitted = signal(false);
+  readonly isSubmitting = signal(false);
+  readonly errorMessage = signal('');
+
+  readonly formStatus = toSignal(
+    this.purchaseForm.statusChanges.pipe(startWith(this.purchaseForm.status)),
+    { initialValue: this.purchaseForm.status }
+  );
 
   readonly isFormInvalid = computed(() => {
-    return this.purchaseForm.invalid;
+    return this.formStatus() !== 'VALID' || this.isSubmitting();
   });
 
   onCancel(): void {
@@ -75,9 +90,30 @@ export class PurchaseRegistration {
       return;
     }
 
-    //const request: PurchaseCreateRequest = this.purchaseForm.getRawValue();
+    const formValue = this.purchaseForm.getRawValue();
 
-    this.dialogRef.close();
+    const request: PurchaseCreateRequest = {
+      userEmail: formValue.userEmail,
+      productName: formValue.productName,
+      category: formValue.category,
+      netAmount: formValue.netAmount,
+      vatRate: formValue.vatRate,
+      purchaseDate: formatDateToLocalIsoDate(formValue.purchaseDate),
+    };
+
+    this.isSubmitting.set(true);
+
+    this.purchaseService.createPurchase(request).subscribe({
+      next: () => {
+        this.purchaseEventsService.notifyPurchaseCreated(request.userEmail);
+        this.isSubmitting.set(false);
+        this.dialogRef.close(true);
+      },
+      error: (error) => {
+        this.isSubmitting.set(false);
+        this.errorMessage.set(extractApiErrorMessage(error));
+      },
+    });
   }
 
   getErrorMessage(controlName: keyof typeof this.purchaseForm.controls): string {

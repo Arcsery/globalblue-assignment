@@ -37,3 +37,8 @@ body {
   height: 100%;
 }
 /* You can add global styles to this file, and also import other style files */
+
+//for dark mode
+mat-form-field input::placeholder {
+  color: #5a5a5a !important;
+}

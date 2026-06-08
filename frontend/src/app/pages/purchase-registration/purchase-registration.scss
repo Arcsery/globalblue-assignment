@@ -24,8 +24,7 @@ button {
   min-width: 120px;
 }
 
-@media (max-width: 600px) {
-  .purchase-form {
-    min-width: 100%;
-  }
+.error-message {
+  margin: 0 24px 12px;
+  color: #b00020;
 }
